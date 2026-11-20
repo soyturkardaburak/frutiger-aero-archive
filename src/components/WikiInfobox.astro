@@ -1,0 +1,30 @@
+---
+import { asset } from '../lib/paths';
+interface Fact {
+  label: string;
+  value: string;
+}
+interface Props {
+  title: string;
+  image: string;
+  imageAlt: string;
+  facts: Fact[];
+}
+const { title, image, imageAlt, facts } = Astro.props;
+---
+<aside class="widget infobox">
+  <h2 class="widget-title">{title}</h2>
+  <div class="widget-body">
+    <img src={asset(image)} alt={imageAlt} width="320" height="140" />
+    <table>
+      <tbody>
+        {facts.map((fact) => (
+          <tr>
+            <th scope="row">{fact.label}</th>
+            <td>{fact.value}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</aside>

@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import GlossyButton from '../components/GlossyButton.astro';
+import { href } from '../lib/paths';
+---
+
+<BaseLayout title="Page not found" description="That page is not in the Aero Atlas archive.">
+  <AeroWindow title="Nothing at this address">
+    <p>The archive does not have a page there. The encyclopedia index and the search box are the two reliable ways back.</p>
+    <p>
+      <GlossyButton href={href('')}>Home</GlossyButton>
+      <GlossyButton href={href('wiki/')} kind="blue">Encyclopedia</GlossyButton>
+    </p>
+  </AeroWindow>
+</BaseLayout>

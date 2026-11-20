@@ -1,0 +1,13 @@
+---
+interface Props {
+  title: string;
+  icon?: boolean;
+}
+const { title } = Astro.props;
+---
+<section class="aero-window">
+  <h2 class="aero-title">{title}</h2>
+  <div class="aero-body">
+    <slot />
+  </div>
+</section>

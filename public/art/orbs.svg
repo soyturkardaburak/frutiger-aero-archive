@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 180">
+  <defs>
+    <radialGradient id="orb" cx="34%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.25" stop-color="#b8ecff"/>
+      <stop offset="0.7" stop-color="#1a92d8"/>
+      <stop offset="1" stop-color="#084e86"/>
+    </radialGradient>
+    <radialGradient id="leaf" cx="34%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#f4ffd0"/>
+      <stop offset="0.45" stop-color="#8ed63c"/>
+      <stop offset="1" stop-color="#2f8a12"/>
+    </radialGradient>
+    <radialGradient id="sun" cx="34%" cy="30%" r="70%">
+      <stop offset="0" stop-color="#fff"/>
+      <stop offset="0.4" stop-color="#ffe27a"/>
+      <stop offset="1" stop-color="#f0a000"/>
+    </radialGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.0"/>
+      <stop offset="1" stop-color="#0a68a8" stop-opacity="0.25"/>
+    </linearGradient>
+  </defs>
+  <rect width="820" height="180" rx="16" fill="#e7f6ff"/>
+  <g transform="translate(40 24)">
+    <ellipse cx="50" cy="128" rx="36" ry="8" fill="url(#floor)"/>
+    <circle cx="50" cy="58" r="42" fill="url(#orb)"/>
+    <path fill="#8ee04a" d="M34 50c8-10 16-8 20-2 6-6 14-4 14 2 6 0 8 8 4 12-4 6-2 8-8 8-6 1-8-3-12-1-4 1-10-2-10-8 0-4-6-6-8-11z"/>
+    <ellipse cx="38" cy="40" rx="14" ry="8" fill="#fff" opacity="0.7"/>
+  </g>
+  <g transform="translate(190 24)">
+    <ellipse cx="50" cy="128" rx="36" ry="8" fill="url(#floor)"/>
+    <path d="M50 20 C78 20 86 58 70 96 C60 78 48 78 34 96 C16 58 24 20 50 20Z" fill="url(#orb)"/>
+    <ellipse cx="44" cy="40" rx="10" ry="6" fill="#fff" opacity="0.75"/>
+  </g>
+  <g transform="translate(340 24)">
+    <ellipse cx="50" cy="128" rx="36" ry="8" fill="url(#floor)"/>
+    <circle cx="50" cy="58" r="42" fill="url(#leaf)"/>
+    <path d="M50 28 C70 50 70 78 50 96 C30 78 30 50 50 28Z" fill="#eaffb0" opacity="0.35"/>
+    <path d="M50 34 V90" stroke="#2f8a12" stroke-width="3"/>
+  </g>
+  <g transform="translate(490 24)">
+    <ellipse cx="50" cy="128" rx="36" ry="8" fill="url(#floor)"/>
+    <circle cx="50" cy="58" r="42" fill="url(#sun)"/>
+    <circle cx="50" cy="58" r="18" fill="#fff6c8"/>
+    <ellipse cx="38" cy="40" rx="12" ry="7" fill="#fff" opacity="0.8"/>
+  </g>
+  <g transform="translate(640 24)">
+    <ellipse cx="50" cy="128" rx="36" ry="8" fill="url(#floor)"/>
+    <circle cx="50" cy="58" r="42" fill="url(#orb)"/>
+    <circle cx="50" cy="58" r="18" fill="#123a5c"/>
+    <circle cx="50" cy="58" r="8" fill="#8fd8ff"/>
+    <ellipse cx="36" cy="40" rx="12" ry="7" fill="#fff" opacity="0.75"/>
+  </g>
+</svg>

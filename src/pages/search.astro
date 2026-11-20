@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import { href } from '../lib/paths';
+
+const q = Astro.url.searchParams.get('q') ?? '';
+const description = 'Search the Aero Atlas encyclopedia, journal, and guides.';
+---
+
+<BaseLayout title="Search" description={description}>
+  <AeroWindow title="Search the archive">
+    <form method="get" action={href('search/')}>
+      <label>
+        Find a page
+        <input type="search" name="q" value={q} data-search-box />
+      </label>
+      <button class="glossy-btn blue small" type="submit">Search</button>
+    </form>
+    <p class="muted" data-search-status>Type a word from an article, an essay, or a section name.</p>
+    <ul data-search-results></ul>
+  </AeroWindow>
+</BaseLayout>
+
+<script define:vars={{ indexUrl: href('search-index.json') }}>
+  const box = document.querySelector('[data-search-box]');
+  const list = document.querySelector('[data-search-results]');
+  const status = document.querySelector('[data-search-status]');
+  const params = new URLSearchParams(window.location.search);
+  let records = [];
+
+  function render(query) {
+    const needle = query.trim().toLowerCase();
+    if (!list || !status) return;
+    list.innerHTML = '';
+    if (!needle) {
+      status.textContent = 'Type a word from an article, an essay, or a section name.';
+      return;
+    }
+    const hits = records.filter((record) => record.text.toLowerCase().includes(needle)).slice(0, 30);
+    status.textContent = hits.length === 1 ? '1 page.' : `${hits.length} pages.`;
+    for (const hit of hits) {
+      const item = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = hit.url;
+      link.textContent = hit.title;
+      const note = document.createElement('div');
+      note.textContent = `${hit.kind} — ${hit.summary}`;
+      item.append(link, note);
+      list.append(item);
+    }
+  }
+
+  fetch(indexUrl)
+    .then((response) => response.json())
+    .then((data) => {
+      records = data;
+      render(params.get('q') || (box && 'value' in box ? box.value : ''));
+    })
+    .catch(() => {
+      if (status) status.textContent = 'The search index did not load.';
+    });
+
+  box?.addEventListener('input', () => {
+    if (box && 'value' in box) render(box.value);
+  });
+</script>

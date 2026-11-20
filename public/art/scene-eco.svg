@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 480">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#1a86d4"/>
+      <stop offset="0.5" stop-color="#79d4fb"/>
+      <stop offset="1" stop-color="#e9f8ff"/>
+    </linearGradient>
+    <linearGradient id="grass" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c6ef78"/>
+      <stop offset="1" stop-color="#3e9818"/>
+    </linearGradient>
+    <linearGradient id="build" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.5" stop-color="#d6f3ff"/>
+      <stop offset="1" stop-color="#8fd0f0"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#ffe08a" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="480" fill="url(#sky)"/>
+  <circle cx="180" cy="80" r="120" fill="url(#sun)"/>
+  <ellipse cx="300" cy="120" rx="80" ry="28" fill="#fff"/>
+  <ellipse cx="360" cy="108" rx="46" ry="22" fill="#fff"/>
+  <ellipse cx="860" cy="90" rx="90" ry="30" fill="#fff" opacity="0.9"/>
+  <path fill="url(#grass)" d="M0 300 C200 250 400 340 600 290 C820 240 1000 320 1200 270 L1200 480 L0 480 Z"/>
+  <path fill="#ffffff" opacity="0.9" d="M470 300 C520 180 700 160 760 300 Z"/>
+  <path fill="url(#build)" d="M500 300 C540 150 700 140 748 300 Z"/>
+  <path d="M560 210 h40 v90 h-40z" fill="#bfe9ff" opacity="0.8"/>
+  <path d="M430 250 C470 230 500 250 520 300" fill="none" stroke="#fff" stroke-width="10" opacity="0.7"/>
+  <circle cx="250" cy="230" r="18" fill="#fff" opacity="0.55" stroke="#fff"/>
+  <circle cx="980" cy="210" r="26" fill="#fff" opacity="0.4" stroke="#fff"/>
+  <text x="40" y="450" fill="#f4fff0" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="16">Original eco-future study · Aero Atlas</text>
+</svg>

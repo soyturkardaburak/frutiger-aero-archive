@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import GlassPanel from '../components/GlassPanel.astro';
+import { profile } from '../data/profile';
+import { href } from '../lib/paths';
+
+const who = profile.displayName || `the GitHub account ${profile.githubUser}`;
+const description = 'Aero Atlas is an independent passion project documenting the glossy, optimistic technology aesthetic of the mid-2000s and early 2010s.';
+---
+
+<BaseLayout title="About" description={description} image="art/logo.svg">
+  <AeroWindow title="About this archive">
+    <p class="archive-kicker">{profile.roleLabel}</p>
+    <p>Aero Atlas is a personal project. It is a place to keep the bright, glassy, slightly damp future that technology advertising and operating systems sold between the middle of the 2000s and the early 2010s. It is not a company, a theme shop, or a portfolio piece dressed up as a product.</p>
+    <p>The site is maintained by {who}.{profile.location ? ` ${profile.location}` : ''} {profile.note}</p>
+    <h2>Why it exists</h2>
+    <p>That future is easy to mock and easy to miss. The glass was sometimes slow. The stock sunsets were repetitive. The optimism aged badly once the same companies started shipping flat tiles and charging rent on the software. Still, the pictures were trying to say that a computer could feel like weather instead of like office furniture. This archive is here because that attempt is worth describing carefully, with the later nickname kept in its place.</p>
+    <h2>How it is designed</h2>
+    <p>The pages borrow the furniture of a 2008 enthusiast site: a centered column, beveled blue title bars, a glossy navigation strip, a three-part encyclopedia layout, and a footer full of small badges. The type stack is Segoe UI, Tahoma, Trebuchet MS, Verdana, and Arial — faces a Windows machine of that era would actually have. The drawings are new. The history is written now. The costume is old on purpose, and it is labeled as a costume.</p>
+    <h2>How it is built</h2>
+    <p>The site is a static Astro project. Encyclopedia articles and journal posts are Markdown files in content collections, so a new page is a new file rather than a change to the layout. Search is a small index generated when the site is built, and it runs in the browser. There is no account system, no comment form, and no visitor counter. It is deployed with GitHub Actions to GitHub Pages.</p>
+    <h2>Contact</h2>
+    <p>{profile.contact}</p>
+    <p><a href={profile.githubUrl}>github.com/{profile.githubUser}</a><br /><a href={profile.repositoryUrl}>Repository for this archive</a></p>
+    <p>Aero Atlas is not affiliated with Microsoft, Apple, Adobe, the Consumer Aesthetics Research Institute, or the University of Waterloo. Windows, Aero, Segoe, and the other product names belong to their owners and are used here only to describe them.</p>
+  </AeroWindow>
+  <GlassPanel label="Edit the personal note">
+    <p>Name, location, and contact text are read from <code>src/data/profile.ts</code>. Leave a field blank and the About page will not invent one.</p>
+    <p><a href={href('licensing/')}>Image licenses</a> · <a href={href('rss.xml')}>RSS</a></p>
+  </GlassPanel>
+</BaseLayout>

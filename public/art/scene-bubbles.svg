@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 640">
+  <defs>
+    <radialGradient id="b" cx="32%" cy="28%" r="70%">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="0.2" stop-color="#ffffff" stop-opacity="0.2"/>
+      <stop offset="0.62" stop-color="#8fdfff" stop-opacity="0.15"/>
+      <stop offset="0.84" stop-color="#ffffff" stop-opacity="0.85"/>
+      <stop offset="1" stop-color="#7ec8ee" stop-opacity="0.08"/>
+    </radialGradient>
+    <linearGradient id="wash" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#e8f9ff"/>
+      <stop offset="1" stop-color="#9adcf8"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="640" fill="url(#wash)"/>
+  <circle cx="220" cy="220" r="120" fill="url(#b)" stroke="#fff" stroke-width="3"/>
+  <circle cx="470" cy="180" r="78" fill="url(#b)" stroke="#fff" stroke-width="3"/>
+  <circle cx="640" cy="300" r="150" fill="url(#b)" stroke="#fff" stroke-width="3"/>
+  <circle cx="300" cy="430" r="90" fill="url(#b)" stroke="#fff" stroke-width="3"/>
+  <circle cx="560" cy="480" r="50" fill="url(#b)" stroke="#fff" stroke-width="2"/>
+  <circle cx="150" cy="480" r="36" fill="url(#b)" stroke="#fff" stroke-width="2"/>
+  <text x="36" y="600" fill="#25485b" font-family="Trebuchet MS, Segoe UI, sans-serif" font-size="18">Original bubble study · Aero Atlas</text>
+</svg>

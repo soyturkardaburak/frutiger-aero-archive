@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AeroWindow from '../../components/AeroWindow.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import GlossyButton from '../../components/GlossyButton.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import { asset, href } from '../../lib/paths';
+import { formatDate } from '../../lib/dates';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.slug } }));
+}
+
+const slug = Astro.params.slug;
+if (!slug) throw new Error('Missing post');
+const post = await getEntry('blog', slug);
+if (!post) throw new Error(`Missing blog entry ${slug}`);
+const { Content } = await render(post);
+const posts = (await getCollection('blog')).sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+const index = posts.findIndex((item) => item.id === post.id);
+const previous = index > 0 ? posts[index - 1] : null;
+const next = index < posts.length - 1 ? posts[index + 1] : null;
+const related = posts.filter((item) => item.id !== post.id && item.data.tags.some((tag) => post.data.tags.includes(tag))).slice(0, 3);
+---
+
+<BaseLayout title={post.data.title} description={post.data.summary} image={post.data.image}>
+  <AeroWindow title={post.data.title}>
+    <p class="archive-kicker">{formatDate(post.data.date)} · {post.data.author} · {post.data.category}</p>
+    <figure class="figure">
+      <img src={asset(post.data.image)} alt={post.data.imageAlt} />
+      <figcaption>{post.data.imageCredit}</figcaption>
+    </figure>
+    <div class="prose">
+      <Content />
+    </div>
+    <p class="tags">
+      {post.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </p>
+    {related.length > 0 && (
+      <>
+        <h2>Related posts</h2>
+        <div class="post-list">
+          {related.map((item) => (
+            <ArticleCard
+              href={href(`blog/${item.slug}/`)}
+              title={item.data.title}
+              summary={item.data.summary}
+              image={item.data.image}
+              imageAlt={item.data.imageAlt}
+              meta={formatDate(item.data.date)}
+            />
+          ))}
+        </div>
+      </>
+    )}
+    <div class="pager">
+      {previous ? <GlossyButton href={href(`blog/${previous.slug}/`)} kind="silver">Previous: {previous.data.title}</GlossyButton> : <span></span>}
+      {next ? <GlossyButton href={href(`blog/${next.slug}/`)} kind="blue">Next: {next.data.title}</GlossyButton> : <span></span>}
+    </div>
+  </AeroWindow>
+</BaseLayout>

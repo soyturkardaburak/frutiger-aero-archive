@@ -1,0 +1,40 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AeroWindow from '../../components/AeroWindow.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { href } from '../../lib/paths';
+import { formatDate, monthKey } from '../../lib/dates';
+
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const groups = new Map<string, typeof posts>();
+for (const post of posts) {
+  const key = monthKey(post.data.date);
+  const list = groups.get(key) ?? [];
+  list.push(post);
+  groups.set(key, list);
+}
+---
+
+<BaseLayout title="Blog" description="A journal about Frutiger Aero, glossy interfaces, and the optimistic future sold by technology companies in the 2000s. Dates are the dates the essays were written.">
+  <AeroWindow title="Journal">
+    <p>Essays from the desk of this archive. They are not backdated to 2008. The look is a costume. The calendar is honest.</p>
+    {[...groups.entries()].map(([label, list]) => (
+      <section id={label.toLowerCase().replace(/\s+/g, '-')}>
+        <h2>{label}</h2>
+        <div class="post-list">
+          {list.map((post) => (
+            <ArticleCard
+              href={href(`blog/${post.slug}/`)}
+              title={post.data.title}
+              summary={post.data.summary}
+              image={post.data.image}
+              imageAlt={post.data.imageAlt}
+              meta={`${formatDate(post.data.date)} · ${post.data.category}`}
+            />
+          ))}
+        </div>
+      </section>
+    ))}
+  </AeroWindow>
+</BaseLayout>

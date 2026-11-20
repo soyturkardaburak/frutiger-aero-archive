@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import { gallery } from '../data/gallery';
+import { href } from '../lib/paths';
+
+const description = 'What every picture on Aero Atlas is, who made it, and which license lets the archive keep a copy.';
+---
+
+<BaseLayout title="Image licenses" description={description}>
+  <AeroWindow title="Pictures, credits, and what we will not copy">
+    <p>Aero Atlas stores its own drawings and, when a license really allows it, photographs from collections such as Wikimedia Commons. A file in the gallery is the file you can download. If a historical interface is still someone else’s copyrighted screenshot, this site links to a legitimate archive instead of pasting the pixels in.</p>
+    <p>Nothing in the gallery is presented as an original Windows, Apple, or advertising screenshot. Drawings made for the archive say “original illustration” in the caption. If that sentence is missing, the credit names the photographer and the license.</p>
+    <h2>How to read a credit</h2>
+    <ul>
+      <li>Original work may be reused along with the source code of this site. Keep the note that it is an Aero Atlas drawing, so it is not mistaken for a period artifact.</li>
+      <li>Creative Commons licenses require you to keep the photographer’s name, the license, and a link, and to say if you changed the picture. Share-Alike licenses also require your adaptation to stay under a compatible license.</li>
+      <li>CC0 means the rights holder waived copyright to the extent the law allows. Attribution is still the decent thing, and this page records it.</li>
+    </ul>
+    <p>Product names, typefaces, and interface designs mentioned in the articles remain the property of their owners. Naming them is not a license to copy their icons or their marketing.</p>
+    <p><a href={href('gallery/')}>Back to the gallery</a></p>
+  </AeroWindow>
+  <AeroWindow title="Files in this copy of the archive">
+    <table>
+      <thead>
+        <tr><th>Picture</th><th>Kind</th><th>Credit and license</th></tr>
+      </thead>
+      <tbody>
+        {gallery.map((item) => (
+          <tr>
+            <td><a href={href(`gallery/#${item.id}`)}>{item.title}</a></td>
+            <td>{item.kind}</td>
+            <td>
+              {item.credit} {item.license}
+              {item.sourceUrl && <> · <a href={item.sourceUrl}>Source page</a></>}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </AeroWindow>
+</BaseLayout>

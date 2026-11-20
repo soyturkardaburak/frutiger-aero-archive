@@ -1,0 +1,18 @@
+---
+import { mainNav } from '../data/nav';
+import { href, isCurrent } from '../lib/paths';
+const path = Astro.url.pathname;
+---
+<nav class="glossy-nav" aria-label="Sections">
+  <button class="glossy-btn blue small nav-toggle" type="button" aria-expanded="false" data-menu-button>
+    Site menu
+  </button>
+  <div class="nav-links" data-menu>
+    {mainNav.map((item) => (
+      <a href={href(item.href)} aria-current={isCurrent(path, item.href) ? 'page' : undefined}>
+        <span class="nav-ico" aria-hidden="true"></span>
+        {item.label}
+      </a>
+    ))}
+  </div>
+</nav>

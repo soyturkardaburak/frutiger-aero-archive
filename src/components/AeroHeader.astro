@@ -1,0 +1,20 @@
+---
+import { asset, href } from '../lib/paths';
+---
+<header class="site-banner">
+  <a class="brand" href={href('')}>
+    <img src={asset('art/logo.svg')} width="74" height="74" alt="" />
+    <span>
+      <strong>AERO ATLAS</strong>
+      <em>The Frutiger Aero Archive</em>
+      <small>A brighter internet, preserved.</small>
+    </span>
+  </a>
+  <form class="banner-search" action={href('search/')} method="get" role="search">
+    <label>
+      Search the archive
+      <input type="search" name="q" placeholder="glass, Vista, type…" />
+    </label>
+    <button class="glossy-btn blue small" type="submit">Search</button>
+  </form>
+</header>

@@ -1,0 +1,33 @@
+---
+import { asset } from '../lib/paths';
+import type { GalleryItem } from '../data/gallery';
+interface Props { item: GalleryItem }
+const { item } = Astro.props;
+---
+<article class="gallery-tile" data-category={item.category} id={item.id}>
+  <button
+    type="button"
+    class="tile-open"
+    data-open
+    data-src={asset(item.src)}
+    data-alt={item.alt}
+    data-title={item.title}
+    data-desc={item.description}
+    data-credit={`${item.credit} ${item.license}`}
+    aria-label={`Enlarge ${item.title}`}
+  >
+    <img class={item.kind === 'photograph' ? 'photo' : 'contain'} src={asset(item.src)} alt={item.alt} width="360" height="140" loading="lazy" />
+  </button>
+  <div>
+    <strong>{item.title}</strong>
+    <small>{item.category}</small>
+    <p>{item.description}</p>
+    <p class="credit">{item.credit} {item.license}</p>
+    {item.download && (
+      <a href={asset(item.src)} download>Download this file</a>
+    )}
+    {item.sourceUrl && (
+      <> · <a href={item.sourceUrl}>Source</a></>
+    )}
+  </div>
+</article>

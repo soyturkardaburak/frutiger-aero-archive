@@ -1,0 +1,72 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import GlassPanel from '../components/GlassPanel.astro';
+import { asset, href } from '../lib/paths';
+
+const description = 'An illustrated guide to Frutiger Aero: what the glossy, glassy, nature-filled technology look of about 2004–2013 actually was, and why the name came later.';
+
+const traits = [
+  { title: 'Glossy textures', image: 'art/orbs.svg', text: 'Highlights sit high and to the left. Buttons, logos, and icons look as if someone has just wiped them. The shine is not a metaphor for a specific object so much as a promise that the surface is new.' },
+  { title: 'Skeuomorphism', image: 'art/scene-glass.svg', text: 'Some of the same years also imitated leather, paper, felt, and wood, especially on early smartphones. A glossy orb can be skeuomorphic. A gradient by itself is only a finish. The archive keeps those ideas apart.' },
+  { title: 'Aero Glass', image: 'art/scene-glass.svg', text: 'Windows Aero, introduced with Vista and continued in Windows 7, blurred whatever sat behind a window frame. That effect needed the Desktop Window Manager and a graphics chip willing to composite the desktop live.' },
+  { title: 'Water and bubbles', image: 'art/scene-water.svg', text: 'Drops, ripples, and soap bubbles stood in for cleanliness, speed, and a vague sense of science class. They show up in wallpapers, in icon bases, and in the way Aqua and Aero were both named for air and water.' },
+  { title: 'Blue skies', image: 'art/scene-meadow.svg', text: 'A clear sky is the default weather of the style. Stock photography from the period loves a horizon with nothing in it but cumulus and sunlight, as if the product had improved the climate.' },
+  { title: 'Green landscapes', image: 'art/scene-eco.svg', text: 'Macro grass, dew, and a single white building in a field. The green is vivid rather than muddy. It sells an ecological future without showing a factory, a mine, or a server room.' },
+  { title: 'Humanist typography', image: 'art/logo.svg', text: 'Frutiger, Myriad, Segoe UI, and Calibri open up the letterforms. On the actual web, Tahoma, Verdana, and Trebuchet MS were still what a stylesheet could count on. The nickname remembers the ideal more than the CSS.' },
+  { title: 'Lens flares', image: 'art/scene-advert.svg', text: 'A small sun in the corner told you the picture was “HD.” Flares, bokeh, and soft glows were proof the camera, and the computer retouching it, had enough resolution to waste some of it on atmosphere.' },
+  { title: 'Nature and technology', image: 'art/scene-eco.svg', text: 'The gadget is rarely in an office. It is in a hand over a stream, on a glass desk that reflects a lawn, or simply implied by a horizon. Nature is the user interface of optimism.' },
+  { title: 'Reflective surfaces', image: 'art/scene-bubbles.svg', text: 'Floors mirror the product. Title bars mirror a light that is not in the room. Web 2.0 logos often grew a faded copy of themselves directly underneath, a reflection with nowhere to stand.' },
+  { title: 'Eco-futurism', image: 'art/scene-eco.svg', text: 'White curves, glass, and lawns suggested that progress had become gentle. The University of Waterloo’s exhibit describes this as a utopian “green future,” and that reading fits the advertising even when the products were ordinary.' },
+  { title: 'High-definition advertising', image: 'art/scene-advert.svg', text: 'Once screens and print could hold more detail, advertising filled the extra pixels with water, skin, grass, and glass. The style is partly a technical boast: look how clear this is.' },
+];
+---
+
+<BaseLayout title="The Aesthetic" description={description} image="art/scene-eco.svg">
+  <AeroWindow title="What is Frutiger Aero?">
+    <p class="archive-kicker">From the Aero Atlas archive</p>
+    <figure class="figure">
+      <img src={asset('art/scene-meadow.svg')} alt="Illustrated meadow, sky, bubbles, and a glass globe." />
+      <figcaption>Original illustration for this page. It gathers the usual ingredients. It is not a found wallpaper.</figcaption>
+    </figure>
+    <p>Frutiger Aero is the name now given to a corporate and consumer look that was everywhere from about the mid-2000s until the early 2010s, and then seemed to vanish into flat icons. Glossy surfaces, glass, water, bubbles, blue sky, saturated grass, humanist sans-serifs, flares, and a cheerful fusion of nature and electronics are the usual signs. The Consumer Aesthetics Research Institute, which coined the term, places the style at roughly 2005 through 2013. The University of Waterloo Computer Museum uses 2004–2013. Those ranges describe a mood, not a patent.</p>
+    <p>It was the visual language of machines that had finally become powerful enough to waste cycles on beauty. A desktop could blur the wallpaper behind a window. A phone advertisement could be printed at a size where you saw individual hairs of grass. A website could afford a large gradient, a reflection, and a handful of alpha-transparent PNGs. The optimism was not only about speed. It was about a future that looked clean, damp, and oddly gentle.</p>
+    <p>People at the time did not ask each other for “Frutiger Aero.” They said Aero if they meant Windows, Aqua if they meant the earlier Macintosh chrome, skeuomorphism if they were arguing about a leather calendar, and Web 2.0 if they meant the rounded, reflective marketing of the social web. The later name is a filing label. It is useful because those things really did share a light, a palette, and a kind of hope. It is misleading if it makes 2008 sound like a scene that already knew what to call itself.</p>
+    <p>The first half of the name points at Adrian Frutiger’s 1976 typeface, drawn for the signage of Charles de Gaulle Airport, and at the humanist sans-serifs that followed its example. Segoe UI, the face Windows Vista used by default, sits in that family. The second half is Microsoft’s: Aero, the glass theme of Vista and Windows 7, expanded by Microsoft as Authentic, Energetic, Reflective, and Open. Put together in 2017 by CARI — the Institute credits Sofi Xian (also referred to as Sofi Lee) and Froyo Tam — the phrase describes a whole commercial climate, not one control panel.</p>
+  </AeroWindow>
+
+  <AeroWindow title="Visual characteristics">
+    <div class="char-grid">
+      {traits.map((trait) => (
+        <article class="char-card glass-panel">
+          <img src={asset(trait.image)} alt="" width="280" height="90" />
+          <h3>{trait.title}</h3>
+          <p>{trait.text}</p>
+        </article>
+      ))}
+    </div>
+    <p>The illustrations above were drawn for Aero Atlas. For the historical pixels, use the screenshot archives on the <a href={href('resources/')}>resources page</a>. This site does not republish proprietary desktop screenshots as if they were ours to give away.</p>
+  </AeroWindow>
+
+  <AeroWindow title="History and cultural context">
+    <h2>Before the glass</h2>
+    <p>The wet highlight is older than Vista. Apple showed Aqua in January 2000: pinstripes, gel capsules, and a window that looked polished rather than stamped out of metal. Mac OS X 10.0 followed in March 2001. Windows XP, in October of that year, answered with Luna, a bright blue and olive theme that was glossy and still opaque. Luna is the plastic decade. Aero is the glass one. Both taught people that a system theme could be a mood.</p>
+    <h2>Vista, Windows 7, and the compositor</h2>
+    <p>Windows Vista reached consumers on 30 January 2007. Its signature, on a PC that qualified, was a translucent frame drawn by the Desktop Window Manager. Microsoft had previewed that direction through the Longhorn years. The finished system was also, famously, a disappointment to a lot of people who had been sold a more ambitious operating system and then handed a heavy one. The look survived the reviews. Windows 7, on sale from 22 October 2009, kept Aero, quieted some of the chrome, and added Peek, Shake, and Snap. For many households this calmer glass is the one they actually remember liking.</p>
+    <h2>Phones, and the other kind of realism</h2>
+    <p>The iPhone was announced in January 2007 and shipped that June. Its early software leaned on objects: a notepad, a felt game table, wooden shelves. That is skeuomorphism more than it is Aero, and it belongs in the same nostalgic pile only if you say why. Both styles trusted texture. One texture was glass and weather. The other was furniture. Early Android and Windows Mobile skins borrowed from both, often without the restraint of either.</p>
+    <h2>Web 2.0 as a costume</h2>
+    <p>Tim O’Reilly’s “What Is Web 2.0,” published on 30 September 2005, is about platforms, participation, and data. The visual fashion that borrowed the name was simpler: rounded rectangles, bright gradients, a reflection under the logo, a beta ribbon, a glossy badge. Blogs and startup homepages used it because it photographed well at 1024 pixels and because it did not look like a grey corporate intranet from 1999. Aero Atlas is built to feel like one of those enthusiastic personal sites, with the history filled in afterwards.</p>
+    <h2>Advertising the green machine</h2>
+    <p>Hardware and telecom ads of the same years repeatedly staged the same picnic. A device, a hand, a horizon, water, a fish, an aurora, a bokeh of city lights that still felt pastoral. CARI’s motif list — aurora, bokeh, macro grass, tertiary color, glass — is a fair inventory of those stock libraries. The Waterloo exhibit calls the combination a utopian green future. The utopia is doing a specific job: it makes a consumer product look like it arrived from a world that had already solved the mess.</p>
+    <h2>The flattening</h2>
+    <p>The turn is easy to date because the big platforms dated it for us. Windows Phone 7 brought flat tiles in October 2010. Windows 8, on 26 October 2012, put that language on the PC and retired the glass as the face of the system. iOS 7, released on 18 September 2013, took the linen, the leather, and the heavy icon texture off the phone. Google’s Material Design, introduced in June 2014, kept a light source but traded water for paper. Flat design was easier to draw at many sizes, and it matched a culture that no longer needed every button to prove the computer was powerful. The novelty had worn off. So had some of the optimism.</p>
+    <h2>Naming a memory</h2>
+    <p>In 2017 the look received the name this archive uses. Through the early 2020s, people who had been children or teenagers in the Vista years began collecting the wallpapers and the stock skies on purpose. A computer museum built an exhibit. The pictures had been sitting in old folders the whole time. What changed was the wish to treat them as a style with edges, instead of as the ordinary way a new phone was supposed to look.</p>
+    <p>Read on in the encyclopedia: <a href={href('wiki/frutiger-aero/')}>Frutiger Aero</a>, <a href={href('wiki/windows-aero/')}>Windows Aero</a>, <a href={href('wiki/flat-design/')}>the rise of flat design</a>, and <a href={href('wiki/revival/')}>the nostalgic revival</a>.</p>
+  </AeroWindow>
+
+  <GlassPanel label="A note on pictures">
+    <p>The panels on this page are original drawings. They are here to show the ingredients, not to impersonate a 2007 advertisement or a Microsoft screenshot. Credits and licenses for every file on the site are on the <a href={href('licensing/')}>licensing page</a>.</p>
+  </GlassPanel>
+</BaseLayout>

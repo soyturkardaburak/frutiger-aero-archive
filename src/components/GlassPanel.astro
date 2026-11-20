@@ -1,0 +1,7 @@
+---
+interface Props { label?: string }
+---
+<div class="glass-panel">
+  {Astro.props.label && <strong>{Astro.props.label}</strong>}
+  <slot />
+</div>

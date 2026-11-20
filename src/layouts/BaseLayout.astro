@@ -1,0 +1,249 @@
+---
+import '../styles/global.css';
+import AeroHeader from '../components/AeroHeader.astro';
+import GlossyNavigation from '../components/GlossyNavigation.astro';
+import SidebarWidget from '../components/SidebarWidget.astro';
+import ArchiveBadge from '../components/ArchiveBadge.astro';
+import { getCollection } from 'astro:content';
+import { wikiCategories } from '../data/nav';
+import { facts, factForDay } from '../data/facts';
+import { gallery } from '../data/gallery';
+import { profile } from '../data/profile';
+import { asset, href, isCurrent } from '../lib/paths';
+import { monthKey } from '../lib/dates';
+
+interface Props {
+  title: string;
+  description: string;
+  image?: string;
+}
+
+const { title, description, image = 'art/scene-meadow.svg' } = Astro.props;
+const pageTitle = title === 'Home' ? 'Aero Atlas · The Frutiger Aero Archive' : `${title} · Aero Atlas`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(asset(image), Astro.site);
+const path = Astro.url.pathname;
+const scene = asset('art/scene-meadow.svg');
+const photo = asset('images/field-clouds.jpg');
+const fact = factForDay();
+const wiki = (await getCollection('wiki')).sort((a, b) => a.data.order - b.data.order);
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const frames = gallery.slice(0, 4);
+
+const monthMap = new Map<string, { label: string; href: string }>();
+for (const post of posts) {
+  const label = monthKey(post.data.date);
+  if (!monthMap.has(label)) monthMap.set(label, { label, href: href(`blog/#${label.toLowerCase().replace(/\s+/g, '-')}`) });
+}
+
+const latest = posts[0];
+const calCells: { n: number | null; href?: string; label?: string }[] = [];
+let calLabel = '';
+if (latest) {
+  const year = latest.data.date.getUTCFullYear();
+  const month = latest.data.date.getUTCMonth();
+  const first = new Date(Date.UTC(year, month, 1));
+  calLabel = monthKey(first);
+  const pad = first.getUTCDay();
+  const days = new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+  for (let i = 0; i < pad; i++) calCells.push({ n: null });
+  for (let n = 1; n <= days; n++) {
+    const post = posts.find((p) => p.data.date.getUTCFullYear() === year && p.data.date.getUTCMonth() === month && p.data.date.getUTCDate() === n);
+    calCells.push({ n, href: post ? href(`blog/${post.slug}/`) : undefined, label: post?.data.title });
+  }
+}
+const serverClock = new Date().toUTCString();
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical.href} />
+    <link rel="icon" href={asset('art/favicon.svg')} type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Aero Atlas" href={href('rss.xml')} />
+    <meta property="og:site_name" content="Aero Atlas" />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={canonical.href} />
+    <meta property="og:image" content={ogImage.href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body style={`--scene:url('${scene}');--photo:url('${photo}')`}>
+    <a class="skip" href="#content">Skip to content</a>
+    <div class="world" aria-hidden="true">
+      <div class="sun-flare"></div>
+      <div class="world-photo"></div>
+      <div class="world-sky"></div>
+      <div class="bokeh" style="width:90px;height:90px;left:8%;top:18%"></div>
+      <div class="bokeh" style="width:50px;height:50px;left:22%;top:8%"></div>
+      <div class="bokeh" style="width:70px;height:70px;right:18%;top:22%"></div>
+      <div class="bubble" style="width:54px;height:54px;left:6%;top:30%"></div>
+      <div class="bubble" style="width:28px;height:28px;left:14%;top:46%;animation-delay:-2s"></div>
+      <div class="bubble" style="width:40px;height:40px;right:7%;top:28%;animation-delay:-4s"></div>
+      <div class="bubble" style="width:18px;height:18px;right:16%;top:52%"></div>
+      <div class="world-grass"></div>
+    </div>
+    <div class="shell">
+      <AeroHeader />
+      <GlossyNavigation />
+      <div class="banner-slot">
+        <slot name="banner" />
+      </div>
+      <div class="layout">
+        <aside class="col-left stack">
+          <SidebarWidget title="Explore">
+            <ul class="meta-list">
+              <li><a class="side-link" href={href('')} aria-current={isCurrent(path, '') ? 'page' : undefined}>Home</a></li>
+              <li><a class="side-link" href={href('aesthetic/')} aria-current={isCurrent(path, 'aesthetic/') ? 'page' : undefined}>The aesthetic</a></li>
+              <li><a class="side-link" href={href('wiki/')} aria-current={isCurrent(path, 'wiki/') ? 'page' : undefined}>Encyclopedia</a></li>
+              <li><a class="side-link" href={href('gallery/')} aria-current={isCurrent(path, 'gallery/') ? 'page' : undefined}>Gallery</a></li>
+              <li><a class="side-link" href={href('blog/')} aria-current={isCurrent(path, 'blog/') ? 'page' : undefined}>Journal</a></li>
+              <li><a class="side-link" href={href('timeline/')} aria-current={isCurrent(path, 'timeline/') ? 'page' : undefined}>Timeline</a></li>
+              <li><a class="side-link" href={href('resources/')} aria-current={isCurrent(path, 'resources/') ? 'page' : undefined}>Resources</a></li>
+              <li><a class="side-link" href={href('licensing/')} aria-current={isCurrent(path, 'licensing/') ? 'page' : undefined}>Image licenses</a></li>
+              <li><a class="side-link" href={href('about/')} aria-current={isCurrent(path, 'about/') ? 'page' : undefined}>About</a></li>
+            </ul>
+          </SidebarWidget>
+          <SidebarWidget title="Wiki categories">
+            <ul class="meta-list">
+              {wikiCategories.map((category) => (
+                <li><a class="side-link" href={href(`wiki/?category=${encodeURIComponent(category)}`)}>{category}</a></li>
+              ))}
+              <li><a class="side-link" href={href('wiki/?letter=A')}>Browse A–Z</a></li>
+            </ul>
+          </SidebarWidget>
+          <SidebarWidget title="Article index">
+            <ul class="meta-list">
+              {wiki.map((entry) => (
+                <li><a class="side-link" href={href(`wiki/${entry.slug}/`)}>{entry.data.title}</a></li>
+              ))}
+            </ul>
+          </SidebarWidget>
+        </aside>
+        <main class="col-main stack" id="content">
+          <slot />
+        </main>
+        <aside class="col-right stack">
+          <slot name="rail" />
+          <SidebarWidget title="Local time">
+            <p class="clock" data-clock>{serverClock}</p>
+            <p class="muted">Your browser clock replaces this UTC reading.</p>
+          </SidebarWidget>
+          <SidebarWidget title="Did you know?">
+            <p data-fact>{fact.text}</p>
+            <p><a href={fact.url}>{fact.source}</a></p>
+            <button class="glossy-btn silver small" type="button" data-next-fact>Another fact</button>
+          </SidebarWidget>
+          <SidebarWidget title="From the shelves">
+            {frames.map((item, index) => (
+              <a data-frame hidden={index > 0} href={href(`gallery/#${item.id}`)}>
+                <img src={asset(item.src)} alt={item.alt} width="240" height="100" />
+                <strong>{item.title}</strong>
+              </a>
+            ))}
+          </SidebarWidget>
+          <SidebarWidget title="Blog archive">
+            {calLabel && <p><strong>{calLabel}</strong></p>}
+            <div class="calendar" aria-label="Days with journal entries">
+              {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d) => <span>{d}</span>)}
+              {calCells.map((cell) => cell.n === null ? <span></span> : cell.href ? <a class="hit" href={cell.href} title={cell.label}>{cell.n}</a> : <span>{cell.n}</span>)}
+            </div>
+            <ul>
+              {[...monthMap.values()].map((month) => <li><a href={month.href}>{month.label}</a></li>)}
+            </ul>
+          </SidebarWidget>
+          <SidebarWidget title="On this computer">
+            <label class="pref"><input type="checkbox" data-pref-bubbles checked /> Floating bubbles</label>
+            <label class="pref"><input type="checkbox" data-pref-text /> Larger text</label>
+            <p class="muted">Saved only in this browser. Nothing is sent anywhere.</p>
+          </SidebarWidget>
+          <SidebarWidget title="Status">
+            <p><span class="led" aria-hidden="true"></span> Static archive · no accounts</p>
+            <p class="muted">Kept by {profile.githubUser}. There is no public comment box and no visitor counter.</p>
+          </SidebarWidget>
+        </aside>
+      </div>
+      <footer class="site-footer">
+        <div class="foot-row">
+          <div>
+            <strong>Aero Atlas</strong>
+            <p>The Frutiger Aero Archive. A brighter internet, preserved.</p>
+            <p>An independent passion project. Not affiliated with Microsoft, Apple, the Consumer Aesthetics Research Institute, or the University of Waterloo.</p>
+          </div>
+          <div class="badge-row">
+            <ArchiveBadge kind="gold" label="Best viewed in a brighter future" />
+            <ArchiveBadge kind="green" href={href('rss.xml')} label="RSS journal" />
+            <ArchiveBadge href={href('licensing/')} label="Pictures credited" />
+            <ArchiveBadge kind="green" label="Glass and grass" />
+          </div>
+        </div>
+        <p><a href={profile.repositoryUrl}>Source on GitHub</a> · <a href={href('about/')}>About</a> · <a href={href('licensing/')}>Licenses</a></p>
+      </footer>
+    </div>
+    <button class="glossy-btn blue small back-top" type="button" data-top>Back to top</button>
+    <script is:inline define:vars={{ facts }}>
+      const root = document.documentElement;
+      const bubblePref = localStorage.getItem('aero-bubbles');
+      const textPref = localStorage.getItem('aero-text');
+      const bubbleBox = document.querySelector('[data-pref-bubbles]');
+      const textBox = document.querySelector('[data-pref-text]');
+      if (bubblePref === 'off') {
+        root.classList.add('bubbles-off');
+        if (bubbleBox) bubbleBox.checked = false;
+      }
+      if (textPref === 'large') {
+        root.classList.add('larger-text');
+        if (textBox) textBox.checked = true;
+      }
+      bubbleBox?.addEventListener('change', () => {
+        const on = bubbleBox.checked;
+        root.classList.toggle('bubbles-off', !on);
+        localStorage.setItem('aero-bubbles', on ? 'on' : 'off');
+      });
+      textBox?.addEventListener('change', () => {
+        const on = textBox.checked;
+        root.classList.toggle('larger-text', on);
+        localStorage.setItem('aero-text', on ? 'large' : 'normal');
+      });
+      const clock = document.querySelector('[data-clock]');
+      const paintClock = () => {
+        if (!clock) return;
+        clock.textContent = new Date().toLocaleString(undefined, {
+          weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+      };
+      paintClock();
+      setInterval(paintClock, 30000);
+      const factNode = document.querySelector('[data-fact]');
+      let factIndex = 0;
+      document.querySelector('[data-next-fact]')?.addEventListener('click', () => {
+        factIndex = (factIndex + 1) % facts.length;
+        if (factNode) factNode.textContent = facts[factIndex].text;
+      });
+      const frames = [...document.querySelectorAll('[data-frame]')];
+      if (frames.length > 1 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let frame = 0;
+        setInterval(() => {
+          frames[frame].hidden = true;
+          frame = (frame + 1) % frames.length;
+          frames[frame].hidden = false;
+        }, 8000);
+      }
+      const menuButton = document.querySelector('[data-menu-button]');
+      const nav = document.querySelector('.glossy-nav');
+      menuButton?.addEventListener('click', () => {
+        const open = nav.classList.toggle('is-open');
+        menuButton.setAttribute('aria-expanded', String(open));
+      });
+      document.querySelector('[data-top]')?.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      });
+    </script>
+  </body>
+</html>

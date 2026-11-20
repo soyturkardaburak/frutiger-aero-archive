@@ -1,0 +1,15 @@
+---
+interface Props {
+  href?: string;
+  kind?: 'green' | 'blue' | 'silver';
+  small?: boolean;
+  type?: 'button' | 'submit';
+}
+const { href, kind = 'green', small = false, type = 'button' } = Astro.props;
+const cls = `glossy-btn ${kind === 'green' ? '' : kind} ${small ? 'small' : ''}`.trim();
+---
+{href ? (
+  <a class={cls} href={href}><slot /></a>
+) : (
+  <button class={cls} type={type}><slot /></button>
+)}

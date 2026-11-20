@@ -1,0 +1,117 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import ArticleCard from '../components/ArticleCard.astro';
+import GlossyButton from '../components/GlossyButton.astro';
+import { getCollection } from 'astro:content';
+import { galleryCategories } from '../data/nav';
+import { factForDay } from '../data/facts';
+import { gallery, itemForDay } from '../data/gallery';
+import { asset, href } from '../lib/paths';
+import { formatDate } from '../lib/dates';
+
+const wiki = (await getCollection('wiki')).sort((a, b) => a.data.order - b.data.order);
+const featured = wiki.filter((entry) => entry.data.featured).slice(0, 4);
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 3);
+const fact = factForDay();
+const design = itemForDay();
+const preview = gallery.slice(0, 6);
+const description = 'Aero Atlas is an independent encyclopedia and journal of Frutiger Aero, the glossy, watery, nature-and-glass look of consumer technology from about 2004 to 2013.';
+---
+
+<BaseLayout title="Home" description={description} image={design.src}>
+  <section class="hero" slot="banner">
+    <div class="hero-bubbles" aria-hidden="true">
+      <span class="bubble" style="width:64px;height:64px;right:8%;top:18%"></span>
+      <span class="bubble" style="width:28px;height:28px;right:18%;top:48%"></span>
+      <span class="bubble" style="width:18px;height:18px;left:42%;top:16%"></span>
+    </div>
+    <div class="hero-copy">
+      <p class="kicker">The Frutiger Aero Archive</p>
+      <h1>WELCOME TO AERO ATLAS</h1>
+      <p>Exploring the future we imagined in the 2000s.</p>
+      <GlossyButton href={href('wiki/frutiger-aero/')}>Explore the archive</GlossyButton>
+    </div>
+  </section>
+
+  <AeroWindow title="Welcome to the archive">
+    <p class="lede">For a few years, consumer technology looked wet. Windows wore glass. Web buttons looked like candy. Advertisements put mobile phones in meadows and laptops beside tropical fish, as if a faster processor were a kind of weather. Aero Atlas is a shelf for that look.</p>
+    <p>The name most people use now, Frutiger Aero, was not written on the boxes. The Consumer Aesthetics Research Institute coined it in 2017, joining Adrian Frutiger’s humanist typefaces with Microsoft’s Aero desktop. The pictures themselves belong to roughly 2004–2013: Windows Vista and Windows 7, early touch phones, Web 2.0 marketing, and a strain of eco-futurist advertising that trusted blue sky as a user interface.</p>
+    <p>This site is a personal encyclopedia, a picture collection, and a journal. The essays are dated when they were actually written. The history pages try to keep the later nickname separate from the words people used at the time: Aero, Aqua, gloss, skeuomorphism, Web 2.0. Where a claim needs a source, the source is linked. Where a picture was drawn for this archive, it says so. It is not offered as a screenshot of anyone’s operating system.</p>
+    <p>Start with <a href={href('aesthetic/')}>the illustrated guide</a>, the <a href={href('wiki/')}>encyclopedia</a>, or the <a href={href('gallery/')}>gallery</a>. The <a href={href('timeline/')}>timeline</a> runs from Aqua in 2000 to the museum exhibits of the 2020s.</p>
+  </AeroWindow>
+
+  <AeroWindow title="Featured articles">
+    <div class="card-grid">
+      {featured.map((entry) => (
+        <ArticleCard
+          href={href(`wiki/${entry.slug}/`)}
+          title={entry.data.title}
+          summary={entry.data.summary}
+          image={entry.data.image}
+          imageAlt={entry.data.imageAlt}
+          meta={entry.data.category}
+        />
+      ))}
+    </div>
+  </AeroWindow>
+
+  <AeroWindow title="Featured gallery">
+    <div class="gallery-grid">
+      {preview.map((item) => (
+        <a class="gallery-tile" href={href(`gallery/#${item.id}`)}>
+          <img src={asset(item.src)} alt={item.alt} width="320" height="132" loading="lazy" />
+          <div>
+            <strong>{item.title}</strong>
+            <small>{item.category}</small>
+          </div>
+        </a>
+      ))}
+    </div>
+    <p><GlossyButton href={href('gallery/')} kind="blue">Open the gallery</GlossyButton></p>
+  </AeroWindow>
+
+  <AeroWindow title="Latest journal">
+    <div class="post-list">
+      {posts.map((post) => (
+        <ArticleCard
+          href={href(`blog/${post.slug}/`)}
+          title={post.data.title}
+          summary={post.data.summary}
+          image={post.data.image}
+          imageAlt={post.data.imageAlt}
+          meta={formatDate(post.data.date)}
+        />
+      ))}
+    </div>
+  </AeroWindow>
+
+  <AeroWindow title="Design of the day">
+    <figure class="figure">
+      <img src={asset(design.src)} alt={design.alt} width="960" height="360" />
+      <figcaption>
+        <strong>{design.title}.</strong> {design.description}
+        <br />{design.credit}
+      </figcaption>
+    </figure>
+  </AeroWindow>
+
+  <AeroWindow title="Did you know?">
+    <p>{fact.text}</p>
+    <p>Source: <a href={fact.url}>{fact.source}</a>. The sidebar keeps the rest of the list and will show another fact if you ask it.</p>
+  </AeroWindow>
+
+  <AeroWindow title="Explore by category">
+    <div class="cat-grid">
+      {galleryCategories.map((category) => (
+        <a class="cat-tile" href={href(`gallery/?category=${encodeURIComponent(category)}`)}>
+          <span>
+            <i class="orb" aria-hidden="true"></i>
+            <strong>{category}</strong>
+            Picture shelf
+          </span>
+        </a>
+      ))}
+    </div>
+  </AeroWindow>
+</BaseLayout>

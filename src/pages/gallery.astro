@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import GalleryTile from '../components/GalleryTile.astro';
+import { gallery } from '../data/gallery';
+import { galleryCategories } from '../data/nav';
+import { href } from '../lib/paths';
+
+const items = gallery;
+const description = 'A visual shelf of original Frutiger Aero studies: skies, glass, water, icons, and poster drawings. Photographs are added only when the license allows them to live here.';
+---
+
+<BaseLayout title="Gallery" description={description} image="art/scene-water.svg">
+  <AeroWindow title="Picture archive">
+    <p>Wallpapers, glass, water, nature, icons, and the kind of poster a 2008 technology brand might have printed. The drawings in this first shelf were made for Aero Atlas. Each one says so. They are not historical screenshots, and they are not borrowed advertisements.</p>
+    <div class="filters" aria-label="Gallery categories">
+      <a href={href('gallery/')}>All</a>
+      {galleryCategories.map((item) => (
+        <a href={href(`gallery/?category=${encodeURIComponent(item)}`)}>{item}</a>
+      ))}
+    </div>
+    <p class="muted" data-count>{items.length} picture{items.length === 1 ? '' : 's'}.</p>
+    <div class="gallery-grid">
+      {items.map((item) => <GalleryTile item={item} />)}
+    </div>
+  </AeroWindow>
+
+  <dialog class="lightbox" id="lightbox" aria-label="Enlarged picture">
+    <header>
+      <strong data-light-title>Picture</strong>
+      <form method="dialog"><button class="glossy-btn silver small" type="submit">Close</button></form>
+    </header>
+    <img alt="" data-light-img />
+    <div class="cap">
+      <p data-light-desc></p>
+      <p class="credit" data-light-credit></p>
+    </div>
+    <menu>
+      <button class="glossy-btn blue small" type="button" data-prev>Previous</button>
+      <button class="glossy-btn blue small" type="button" data-next>Next</button>
+    </menu>
+  </dialog>
+</BaseLayout>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('#lightbox');
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get('category');
+  document.querySelectorAll<HTMLAnchorElement>('.filters a').forEach((link) => {
+    const linkCategory = new URL(link.href).searchParams.get('category');
+    const on = category ? linkCategory === category : !linkCategory;
+    if (on) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+  document.querySelectorAll<HTMLElement>('.gallery-tile').forEach((tile) => {
+    tile.hidden = Boolean(category) && tile.dataset.category !== category;
+  });
+  const visibleTiles = [...document.querySelectorAll<HTMLElement>('.gallery-tile')].filter((tile) => !tile.hidden);
+  const count = document.querySelector('[data-count]');
+  if (count) {
+    const noun = visibleTiles.length === 1 ? 'picture' : 'pictures';
+    count.textContent = category ? `${visibleTiles.length} ${noun} in ${category}.` : `${visibleTiles.length} ${noun}.`;
+  }
+  const buttons = visibleTiles.flatMap((tile) => [...tile.querySelectorAll<HTMLButtonElement>('[data-open]')]);
+  const img = dialog?.querySelector<HTMLImageElement>('[data-light-img]');
+  const title = dialog?.querySelector<HTMLElement>('[data-light-title]');
+  const desc = dialog?.querySelector<HTMLElement>('[data-light-desc]');
+  const credit = dialog?.querySelector<HTMLElement>('[data-light-credit]');
+  let index = 0;
+
+  function show(next: number) {
+    if (!dialog || !img || !title || !desc || !credit || buttons.length === 0) return;
+    index = (next + buttons.length) % buttons.length;
+    const button = buttons[index];
+    img.src = button.dataset.src || '';
+    img.alt = button.dataset.alt || '';
+    title.textContent = button.dataset.title || '';
+    desc.textContent = button.dataset.desc || '';
+    credit.textContent = button.dataset.credit || '';
+    if (!dialog.open) dialog.showModal();
+  }
+
+  buttons.forEach((button, buttonIndex) => {
+    button.addEventListener('click', () => show(buttonIndex));
+  });
+  dialog?.querySelector('[data-prev]')?.addEventListener('click', () => show(index - 1));
+  dialog?.querySelector('[data-next]')?.addEventListener('click', () => show(index + 1));
+  document.addEventListener('keydown', (event) => {
+    if (!dialog?.open) return;
+    if (event.key === 'ArrowRight') show(index + 1);
+    if (event.key === 'ArrowLeft') show(index - 1);
+  });
+</script>

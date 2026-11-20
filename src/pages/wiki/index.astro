@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AeroWindow from '../../components/AeroWindow.astro';
+import ArticleCard from '../../components/ArticleCard.astro';
+import { getCollection } from 'astro:content';
+import { wikiCategories } from '../../data/nav';
+import { href } from '../../lib/paths';
+
+const all = (await getCollection('wiki')).sort((a, b) => a.data.title.localeCompare(b.data.title));
+const letters = [...new Set(all.map((entry) => entry.data.title[0].toUpperCase()))].sort();
+---
+
+<BaseLayout title="Wiki" description="A browsable encyclopedia of Frutiger Aero, Windows Aero, gloss, skeuomorphism, typography, and the flat design that followed.">
+  <AeroWindow title="Encyclopedia">
+    <p class="archive-kicker">From the Aero Atlas archive</p>
+    <p>Twelve articles, written for this site. They can be filtered by category or by the first letter of the title. There is no edit button, because this is not a public wiki with accounts. To add an article, put a Markdown file in the collection. The method is in the README.</p>
+    <form method="get" action={href('wiki/')}>
+      <label>
+        Search titles and summaries
+        <input type="search" name="q" data-wiki-q />
+      </label>
+      <button class="glossy-btn blue small" type="submit">Search</button>
+    </form>
+    <div class="filters" aria-label="Categories">
+      <a href={href('wiki/')} data-wiki-filter="all">All</a>
+      {wikiCategories.map((item) => (
+        <a href={href(`wiki/?category=${encodeURIComponent(item)}`)} data-wiki-filter="category" data-value={item}>{item}</a>
+      ))}
+    </div>
+    <div class="filters" aria-label="Alphabetical">
+      {letters.map((item) => (
+        <a href={href(`wiki/?letter=${item}`)} data-wiki-filter="letter" data-value={item}>{item}</a>
+      ))}
+    </div>
+    <p class="muted" data-wiki-count>{all.length} articles.</p>
+    <div class="card-grid">
+      {all.map((entry) => (
+        <div
+          data-wiki-card
+          data-category={entry.data.category}
+          data-letter={entry.data.title[0].toUpperCase()}
+          data-text={`${entry.data.title} ${entry.data.summary} ${entry.data.tags.join(' ')} ${entry.data.category}`.toLowerCase()}
+        >
+          <ArticleCard
+            href={href(`wiki/${entry.slug}/`)}
+            title={entry.data.title}
+            summary={entry.data.summary}
+            image={entry.data.image}
+            imageAlt={entry.data.imageAlt}
+            meta={entry.data.category}
+          />
+        </div>
+      ))}
+    </div>
+    <p data-wiki-empty hidden>Nothing in the encyclopedia matches that filter.</p>
+  </AeroWindow>
+</BaseLayout>
+
+<script>
+  const params = new URLSearchParams(window.location.search);
+  const category = params.get('category') ?? '';
+  const letter = (params.get('letter') ?? '').toUpperCase();
+  const query = (params.get('q') ?? '').trim().toLowerCase();
+  const box = document.querySelector<HTMLInputElement>('[data-wiki-q]');
+  if (box) box.value = params.get('q') ?? '';
+  const cards = [...document.querySelectorAll<HTMLElement>('[data-wiki-card]')];
+  let shown = 0;
+  for (const card of cards) {
+    const matchesCategory = !category || card.dataset.category === category;
+    const matchesLetter = !letter || card.dataset.letter === letter;
+    const matchesQuery = !query || (card.dataset.text ?? '').includes(query);
+    const visible = matchesCategory && matchesLetter && matchesQuery;
+    card.hidden = !visible;
+    if (visible) shown += 1;
+  }
+  const count = document.querySelector('[data-wiki-count]');
+  if (count) count.textContent = shown === 1 ? '1 article.' : `${shown} articles.`;
+  const empty = document.querySelector<HTMLElement>('[data-wiki-empty]');
+  if (empty) empty.hidden = shown !== 0;
+  document.querySelectorAll<HTMLAnchorElement>('[data-wiki-filter]').forEach((link) => {
+    const kind = link.dataset.wikiFilter;
+    const value = link.dataset.value ?? '';
+    const on = kind === 'all' ? !category && !letter : kind === 'category' ? value === category : value === letter;
+    if (on) link.setAttribute('aria-current', 'page');
+    else link.removeAttribute('aria-current');
+  });
+</script>

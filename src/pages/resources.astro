@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import AeroWindow from '../components/AeroWindow.astro';
+import { resourceGroups } from '../data/resources';
+import { href } from '../lib/paths';
+
+const description = 'A curated shelf of Frutiger Aero research, interface archives, type specimens, picture collections, and neighboring aesthetics.';
+---
+
+<BaseLayout title="Resources" description={description}>
+  <AeroWindow title="A shelf of sources">
+    <p>These links leave the archive. They were chosen because they document the style, the interfaces, or the type, not because they match the wallpaper. If a page moves, prefer the institution’s own search over a guessed address. Image rights for files stored here are explained on the <a href={href('licensing/')}>licensing page</a>.</p>
+  </AeroWindow>
+  {resourceGroups.map((group) => (
+    <AeroWindow title={group.title}>
+      <p>{group.intro}</p>
+      {group.items.map((item) => (
+        <article class="resource">
+          <h3><a href={item.url}>{item.title}</a></h3>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </AeroWindow>
+  ))}
+</BaseLayout>

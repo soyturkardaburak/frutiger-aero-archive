@@ -1,0 +1,87 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import AeroWindow from '../../components/AeroWindow.astro';
+import WikiInfobox from '../../components/WikiInfobox.astro';
+import GlossyButton from '../../components/GlossyButton.astro';
+import { getCollection, getEntry, render } from 'astro:content';
+import { asset, href } from '../../lib/paths';
+import { formatDate } from '../../lib/dates';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('wiki');
+  return entries.map((entry) => ({ params: { slug: entry.slug } }));
+}
+
+const slug = Astro.params.slug;
+if (!slug) throw new Error('Missing article');
+const entry = await getEntry('wiki', slug);
+if (!entry) throw new Error(`Missing wiki entry ${slug}`);
+const { Content, headings } = await render(entry);
+const all = (await getCollection('wiki')).sort((a, b) => a.data.order - b.data.order);
+const index = all.findIndex((item) => item.id === entry.id);
+const previous = index > 0 ? all[index - 1] : null;
+const next = index < all.length - 1 ? all[index + 1] : null;
+const related = (await Promise.all(entry.data.related.map((id) => getEntry('wiki', id)))).filter((item) => item !== undefined);
+const toc = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+<BaseLayout title={entry.data.title} description={entry.data.summary} image={entry.data.image}>
+  <WikiInfobox
+    slot="rail"
+    title="Quick facts"
+    image={entry.data.image}
+    imageAlt={entry.data.imageAlt}
+    facts={[
+      { label: 'Period', value: entry.data.infobox.period },
+      { label: 'Also called', value: entry.data.infobox.alsoCalled },
+      { label: 'Field', value: entry.data.infobox.field },
+      { label: 'Category', value: entry.data.category },
+      { label: 'Updated', value: formatDate(entry.data.updated) },
+    ]}
+  />
+  <AeroWindow title={entry.data.title}>
+    <p class="archive-kicker">From the Aero Atlas archive</p>
+    <p class="lede">{entry.data.summary}</p>
+    <figure class="figure">
+      <img src={asset(entry.data.image)} alt={entry.data.imageAlt} />
+      <figcaption>{entry.data.imageCredit}</figcaption>
+    </figure>
+    {toc.length > 0 && (
+      <details class="toc" open>
+        <summary>Contents</summary>
+        <ol>
+          {toc.map((heading) => (
+            <li style={heading.depth === 3 ? 'margin-left:1rem' : undefined}>
+              <a href={`#${heading.slug}`}>{heading.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    )}
+    <div class="prose">
+      <Content />
+    </div>
+    <p class="tags">
+      <a class="tag" href={href(`wiki/?category=${encodeURIComponent(entry.data.category)}`)}>{entry.data.category}</a>
+      {entry.data.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </p>
+    {related.length > 0 && (
+      <>
+        <h2>Related articles</h2>
+        <ul>
+          {related.map((item) => <li><a href={href(`wiki/${item.slug}/`)}>{item.data.title}</a></li>)}
+        </ul>
+      </>
+    )}
+    <h2>References and further reading</h2>
+    <ol>
+      {entry.data.references.map((ref) => (
+        <li><a href={ref.url}>{ref.title}</a></li>
+      ))}
+    </ol>
+    <div class="pager">
+      {previous ? <GlossyButton href={href(`wiki/${previous.slug}/`)} kind="silver">Previous: {previous.data.title}</GlossyButton> : <span></span>}
+      {next ? <GlossyButton href={href(`wiki/${next.slug}/`)} kind="blue">Next: {next.data.title}</GlossyButton> : <span></span>}
+    </div>
+  </AeroWindow>
+</BaseLayout>

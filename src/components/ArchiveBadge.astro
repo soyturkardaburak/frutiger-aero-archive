@@ -1,0 +1,10 @@
+---
+interface Props {
+  href?: string;
+  kind?: 'blue' | 'green' | 'gold';
+  label: string;
+}
+const { href, kind = 'blue', label } = Astro.props;
+const cls = `archive-badge ${kind === 'blue' ? '' : kind}`;
+---
+{href ? <a class={cls} href={href}>{label}</a> : <span class={cls}>{label}</span>}
