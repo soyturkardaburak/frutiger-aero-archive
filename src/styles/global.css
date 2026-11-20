@@ -37,6 +37,7 @@ a:hover { color: #043e6e; }
   outline-offset: 2px;
   box-shadow: 0 0 0 4px var(--ocean);
 }
+[hidden] { display: none !important; }
 
 .skip {
   position: absolute;
